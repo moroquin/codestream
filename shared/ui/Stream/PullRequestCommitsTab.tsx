@@ -104,8 +104,12 @@ export const PullRequestCommitsTab = props => {
 	const derivedState = useSelector((state: CodeStreamState) => {
 		return {
 			providerPullRequests: state.providerPullRequests.pullRequests,
+			currentPullRequest: state.context.currentPullRequest,
 			currentPullRequestId: state.context.currentPullRequest
 				? state.context.currentPullRequest.id
+				: undefined,
+			currentPullRequestMetadata: state.context.currentPullRequest
+				? state.context.currentPullRequest.metadata
 				: undefined
 		};
 	});
@@ -129,17 +133,25 @@ export const PullRequestCommitsTab = props => {
 	useEffect(() => {
 		(async () => {
 			const data = await dispatch(
-				getPullRequestCommits(pr.providerId, derivedState.currentPullRequestId!)
+				getPullRequestCommits(
+					pr.providerId,
+					derivedState.currentPullRequestId!,
+					derivedState.currentPullRequestMetadata
+				)
 			);
 			_mapData(data);
 		})();
-	}, [derivedState.providerPullRequests]);
+	}, [derivedState.currentPullRequest]);
 
 	useDidMount(() => {
 		setIsLoading(true);
 		(async () => {
 			const data = await dispatch(
-				getPullRequestCommits(pr.providerId, derivedState.currentPullRequestId!)
+				getPullRequestCommits(
+					pr.providerId,
+					derivedState.currentPullRequestId!,
+					derivedState.currentPullRequestMetadata
+				)
 			);
 			_mapData(data);
 		})();
