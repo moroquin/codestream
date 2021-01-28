@@ -1049,6 +1049,7 @@ export class PostsManager extends EntityManagerBase<CSPost> {
 					providerId: parsedUri.context.pullRequest.providerId,
 					params: {
 						pullRequestId: parsedUri.context.pullRequest.id,
+						leftSha: parsedUri.leftSha,
 						sha: parsedUri.rightSha,
 						text: request.attributes.text || "",
 						path: parsedUri.path,
