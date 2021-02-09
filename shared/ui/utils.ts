@@ -7,6 +7,7 @@ export interface Disposable {
 	dispose(): void;
 }
 
+// DO NOT USE THESE
 export const emptyObject = {};
 export const emptyArray = [];
 export function noop() {}

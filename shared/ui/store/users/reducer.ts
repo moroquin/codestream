@@ -154,6 +154,12 @@ export const getPreferences = createSelector(
 	(preferences: PreferencesState) => preferences
 );
 
+export const getReadReplies = createSelector(
+	(state: CodeStreamState) => state.preferences,
+	(_: any, id: string) => id,
+	(preferences: PreferencesState, id: string) => (preferences.readReplies || {})[id] || 0
+);
+
 export const getCodeCollisions = createSelector(
 	getCurrentTeam,
 	getCurrentUser,

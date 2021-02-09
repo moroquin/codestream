@@ -38,7 +38,8 @@ import {
 	getUserByCsId,
 	getTeamMembers,
 	getUsernames,
-	getTeamTagsHash
+	getTeamTagsHash,
+	getReadReplies
 } from "../store/users/reducer";
 import { PROVIDER_MAPPINGS } from "./CrossPostIssueControls/types";
 import { CodemarkForm } from "./CodemarkForm";
@@ -124,7 +125,6 @@ interface ConnectedProps {
 	pinnedReplies: CSPost[];
 	pinnedAuthors: CSUser[];
 	relatedCodemarkIds: string[];
-	isCodeStreamTeam: boolean;
 	teamTagsHash: any;
 	codeWasDeleted?: boolean;
 	codeWillExist?: boolean;
@@ -137,6 +137,7 @@ interface ConnectedProps {
 	review?: CSReview;
 	post?: CSPost;
 	moveMarkersEnabled: boolean;
+	unread: boolean;
 }
 
 export type DisplayType = "default" | "collapsed" | "activity";
@@ -159,6 +160,9 @@ interface InheritedProps {
 }
 
 type Props = InheritedProps & DispatchProps & ConnectedProps;
+
+const EMPTY_OBJECT = {};
+const EMPTY_OBJECT2 = {};
 
 export class Codemark extends React.Component<Props, State> {
 	static defaultProps: Partial<Props> = {
@@ -910,6 +914,7 @@ export class Codemark extends React.Component<Props, State> {
 
 		const color = codemark.pinned ? (codemark.status === "closed" ? "purple" : "green") : "gray";
 		const renderedTags = hideTags ? null : this.renderTags(codemark);
+		const unread = this.props.unread ? " unread" : "";
 		return (
 			<div
 				id={`codemark-${codemark.id}`}
@@ -937,7 +942,10 @@ export class Codemark extends React.Component<Props, State> {
 							/>
 						)}
 						{codemark.numReplies > 0 && (
-							<span className="badge" style={{ marginLeft: "10px", flexGrow: 0, flexShrink: 0 }}>
+							<span
+								className={`badge${unread}`}
+								style={{ marginLeft: "10px", flexGrow: 0, flexShrink: 0 }}
+							>
 								{codemark.numReplies}
 							</span>
 						)}
@@ -1254,7 +1262,7 @@ export class Codemark extends React.Component<Props, State> {
 								placement="bottom"
 								name="comment"
 							/>{" "}
-							{this.props.isCodeStreamTeam && codemark.numReplies}
+							{codemark.numReplies}
 						</span>
 					)}
 				</div>
@@ -2109,6 +2117,8 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 			? getReview(state.reviews, codemark.reviewId)
 			: undefined;
 
+	const readReplies = codemark ? getReadReplies(state, codemark.id) : 0;
+
 	return {
 		post,
 		review,
@@ -2121,8 +2131,8 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 		relatedCodemarkIds,
 		currentUser: users[session.userId!] as CSMe,
 		author: author as CSUser,
-		codemarkKeybindings: preferences.codemarkKeybindings || emptyObject,
-		isCodeStreamTeam: true /*teamProvider === "codestream",*/, // this should always be true now, even for SSO sign-in
+		codemarkKeybindings: preferences.codemarkKeybindings || EMPTY_OBJECT,
+		unread: codemark ? readReplies < codemark.numReplies : false,
 		teammates: getTeamMembers(state),
 		usernames: getUsernames(state),
 		teamTagsHash,
