@@ -4,5 +4,6 @@ export interface UnreadsState extends Unreads {}
 
 export enum UnreadsActionsType {
 	Update = "@umis/Update",
-	ResetLastReads = "@umis/ResetLastReads"
+	ResetLastReads = "@umis/ResetLastReads",
+	ResetLastReadItems = "@umis/ResetLastReadItems"
 }

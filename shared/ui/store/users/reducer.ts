@@ -1,4 +1,4 @@
-import { CSUser, CSStream, StreamType } from "@codestream/protocols/api";
+import { CSUser, CSStream, StreamType, CSPost } from "@codestream/protocols/api";
 import { createSelector } from "reselect";
 import { mapFilter, toMapBy, emptyArray } from "../../utils";
 import { ActionType } from "../common";
@@ -8,6 +8,7 @@ import { CodeStreamState } from "..";
 import { difference, isString } from "lodash-es";
 import { getStreamForId } from "../streams/reducer";
 import { PreferencesState } from "../preferences/types";
+import { UnreadsState } from "../unreads/types";
 
 type UsersActions = ActionType<typeof actions>;
 
@@ -158,6 +159,17 @@ export const getReadReplies = createSelector(
 	(state: CodeStreamState) => state.preferences,
 	(_: any, id: string) => id,
 	(preferences: PreferencesState, id: string) => (preferences.readReplies || {})[id] || 0
+);
+
+export const isUnread = createSelector(
+	(state: CodeStreamState) => state.umis,
+	(a: any, post?: CSPost) => post,
+	(umis: UnreadsState, post?: CSPost) => {
+		if (!post) return false;
+		const { lastReadItems = {} } = umis;
+		if (!lastReadItems[post.id]) return true;
+		return false;
+	}
 );
 
 export const getCodeCollisions = createSelector(

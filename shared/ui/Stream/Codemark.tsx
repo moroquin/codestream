@@ -39,7 +39,7 @@ import {
 	getTeamMembers,
 	getUsernames,
 	getTeamTagsHash,
-	getReadReplies
+	isUnread
 } from "../store/users/reducer";
 import { PROVIDER_MAPPINGS } from "./CrossPostIssueControls/types";
 import { CodemarkForm } from "./CodemarkForm";
@@ -53,7 +53,6 @@ import { confirmPopup } from "./Confirm";
 import { getPost } from "../store/posts/reducer";
 import { getPosts } from "../store/posts/actions";
 import Tooltip from "./Tooltip";
-import { getCurrentTeamProvider } from "../store/teams/reducer";
 import { isNil } from "lodash-es";
 import { CodeStreamState } from "../store";
 import {
@@ -2117,8 +2116,6 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 			? getReview(state.reviews, codemark.reviewId)
 			: undefined;
 
-	const readReplies = codemark ? getReadReplies(state, codemark.id) : 0;
-
 	return {
 		post,
 		review,
@@ -2132,7 +2129,7 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 		currentUser: users[session.userId!] as CSMe,
 		author: author as CSUser,
 		codemarkKeybindings: preferences.codemarkKeybindings || EMPTY_OBJECT,
-		unread: codemark ? readReplies < codemark.numReplies : false,
+		unread: isUnread(state, post),
 		teammates: getTeamMembers(state),
 		usernames: getUsernames(state),
 		teamTagsHash,

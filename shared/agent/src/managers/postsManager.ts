@@ -53,6 +53,9 @@ import {
 	GetPostResponse,
 	GetPostsRequest,
 	GetPostsRequestType,
+	MarkItemReadRequest,
+	MarkItemReadRequestType,
+	MarkItemReadResponse,
 	MarkPostUnreadRequest,
 	MarkPostUnreadRequestType,
 	MarkPostUnreadResponse,
@@ -1801,6 +1804,11 @@ export class PostsManager extends EntityManagerBase<CSPost> {
 	@lspHandler(MarkPostUnreadRequestType)
 	markPostUnread(request: MarkPostUnreadRequest): Promise<MarkPostUnreadResponse> {
 		return this.session.api.markPostUnread(request);
+	}
+
+	@lspHandler(MarkItemReadRequestType)
+	markItemRead(request: MarkItemReadRequest): Promise<MarkItemReadResponse> {
+		return this.session.api.markItemRead(request);
 	}
 
 	@lspHandler(ReactToPostRequestType)

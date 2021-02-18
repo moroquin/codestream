@@ -298,6 +298,10 @@ export interface CSMarkPostUnreadRequest {}
 
 export interface CSMarkPostUnreadResponse {}
 
+export interface CSMarkItemReadRequest {}
+
+export interface CSMarkItemReadResponse {}
+
 export interface CSSetCodemarkPinnedRequest {}
 
 export interface CSSetCodemarkPinnedResponse {

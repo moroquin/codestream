@@ -23,6 +23,7 @@ import {
 	DeleteMarkerRequest,
 	DeleteMarkerResponse,
 	DidChangeDataNotificationType,
+	MarkItemReadRequest,
 	ReportingMessageType,
 	RepoScmStatus,
 	UpdateInvisibleRequest,
@@ -209,6 +210,8 @@ import {
 	CSJoinStreamResponse,
 	CSLoginRequest,
 	CSLoginResponse,
+	CSMarkItemReadRequest,
+	CSMarkItemReadResponse,
 	CSMarkPostUnreadRequest,
 	CSMarkPostUnreadResponse,
 	CSMe,
@@ -584,7 +587,7 @@ export class CodeStreamApiProvider implements ApiProvider {
 		if (types === undefined || types.includes(MessageType.Unreads)) {
 			this._unreads = new CodeStreamUnreads(this);
 			this._unreads.onDidChange(this.onUnreadsChanged, this);
-			this._unreads.compute(this._user!.lastReads);
+			this._unreads.compute(this._user!.lastReads, this._user!.lastReadItems);
 		}
 		if (types === undefined || types.includes(MessageType.Preferences)) {
 			this._preferences = new CodeStreamPreferences(this._user!.preferences);
@@ -757,7 +760,7 @@ export class CodeStreamApiProvider implements ApiProvider {
 						this._unreads !== undefined &&
 						!Objects.shallowEquals(lastReads, this._user.lastReads || {})
 					) {
-						this._unreads.compute(me.lastReads);
+						this._unreads.compute(me.lastReads, me.lastReadItems);
 					}
 					if (!this._preferences) {
 						this._preferences = new CodeStreamPreferences(this._user.preferences);
@@ -797,6 +800,7 @@ export class CodeStreamApiProvider implements ApiProvider {
 			return {
 				unreads: {
 					lastReads: {},
+					lastReadItems: {},
 					mentions: {},
 					unreads: {},
 					totalMentions: 0,
@@ -1252,6 +1256,15 @@ export class CodeStreamApiProvider implements ApiProvider {
 	markPostUnread(request: MarkPostUnreadRequest) {
 		return this.put<CSMarkPostUnreadRequest, CSMarkPostUnreadResponse>(
 			`/unread/${request.postId}`,
+			request,
+			this._token
+		);
+	}
+
+	@log()
+	markItemRead(request: MarkItemReadRequest) {
+		return this.put<CSMarkItemReadRequest, CSMarkItemReadResponse>(
+			`/read-item/${request.postId}`,
 			request,
 			this._token
 		);

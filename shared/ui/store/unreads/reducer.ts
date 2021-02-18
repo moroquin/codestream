@@ -6,6 +6,7 @@ type UnreadsActions = ActionType<typeof actions>;
 
 const initialState: UnreadsState = {
 	lastReads: {},
+	lastReadItems: {},
 	mentions: {},
 	unreads: {},
 	totalUnreads: 0,
@@ -20,12 +21,16 @@ export function reduceUnreads(state = initialState, action: UnreadsActions) {
 				totalMentions: payload.totalMentions,
 				totalUnreads: payload.totalUnreads,
 				lastReads: { ...state.lastReads, ...payload.lastReads },
+				lastReadItems: { ...state.lastReadItems, ...payload.lastReadItems },
 				mentions: payload.mentions,
 				unreads: payload.unreads
 			};
 		}
 		case UnreadsActionsType.ResetLastReads: {
 			return { ...state, lastReads: {} };
+		}
+		case UnreadsActionsType.ResetLastReadItems: {
+			return { ...state, lastReadItems: {} };
 		}
 		case "RESET":
 			return initialState;

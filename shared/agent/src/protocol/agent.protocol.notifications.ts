@@ -125,6 +125,7 @@ export interface TeamsChangedNotification {
 
 export interface Unreads {
 	lastReads: CSLastReads;
+	lastReadItems: CSLastReads;
 	mentions: { [streamId: string]: number };
 	unreads: { [streamId: string]: number };
 	totalMentions: number;

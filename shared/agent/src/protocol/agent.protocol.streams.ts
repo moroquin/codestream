@@ -199,6 +199,20 @@ export const MarkStreamReadRequestType = new RequestType<
 	void
 >("codestream/stream/markRead");
 
+export interface MarkItemReadRequest {
+	postId: string;
+	numReplies: number;
+}
+
+export interface MarkItemReadResponse {}
+
+export const MarkItemReadRequestType = new RequestType<
+	MarkItemReadRequest,
+	MarkItemReadResponse,
+	void,
+	void
+>("codestream/post/markRead");
+
 export interface MuteStreamRequest {
 	streamId: string;
 	mute: boolean;

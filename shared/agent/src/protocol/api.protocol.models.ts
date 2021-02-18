@@ -696,6 +696,7 @@ type CSMeProviderInfo = { slack?: CSSlackProviderInfo } & {
 
 export interface CSMe extends CSUser {
 	lastReads: CSLastReads;
+	lastReadItems: CSLastReads;
 	joinMethod: string;
 	lastInviteType?: string;
 	preferences?: CSMePreferences;
