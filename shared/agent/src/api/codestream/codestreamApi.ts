@@ -744,6 +744,9 @@ export class CodeStreamApiProvider implements ApiProvider {
 				const lastReads = {
 					...(this._unreads ? (await this._unreads.get()).lastReads : this._user!.lastReads)
 				};
+				const lastReadItems = {
+					...(this._unreads ? (await this._unreads.get()).lastReadItems : this._user!.lastReadItems)
+				};
 
 				const userPreferencesBefore = JSON.stringify(me.preferences);
 
@@ -758,7 +761,8 @@ export class CodeStreamApiProvider implements ApiProvider {
 				try {
 					if (
 						this._unreads !== undefined &&
-						!Objects.shallowEquals(lastReads, this._user.lastReads || {})
+						(!Objects.shallowEquals(lastReads, this._user.lastReads || {}) ||
+							!Objects.shallowEquals(lastReadItems, this._user.lastReadItems || {}))
 					) {
 						this._unreads.compute(me.lastReads, me.lastReadItems);
 					}
