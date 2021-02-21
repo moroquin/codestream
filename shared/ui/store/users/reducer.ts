@@ -167,7 +167,10 @@ export const isUnread = createSelector(
 	(umis: UnreadsState, post?: CSPost) => {
 		if (!post) return false;
 		const { lastReadItems = {} } = umis;
-		if (!lastReadItems[post.id]) return true;
+		const lastReadItem = lastReadItems[post.id];
+		// if we've never read the item, or if there are new replies
+		// since the last time we read it, return true
+		if (lastReadItem == undefined || post.numReplies > lastReadItem) return true;
 		return false;
 	}
 );
