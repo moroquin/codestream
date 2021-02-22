@@ -667,6 +667,13 @@ export interface CSMePreferences {
 	codemarksShowArchived?: boolean;
 
 	defaultResolveAction?: "resolve" | "archive";
+
+	// currently only supported by GitLab
+	pullRequestTimelineOrder?: "oldest" | "newest";
+	pullRequestTimelineFilter?: "all" | "history" | "comments";
+	pullRequestSquashCommits?: boolean;
+	pullRequestDeleteSourceBranch?: boolean;
+
 	[key: string]: any;
 }
 
