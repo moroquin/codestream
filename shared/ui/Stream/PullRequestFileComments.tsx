@@ -79,7 +79,7 @@ export const PullRequestFileComments = (props: PropsWithChildren<Props>) => {
 			);
 			_mapData(data);
 		})();
-	}, [derivedState.providerPullRequests]);
+	}, [pr.providerId, derivedState.currentPullRequestId]);
 
 	const openFile = file => {};
 
