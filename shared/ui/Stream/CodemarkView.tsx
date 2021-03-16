@@ -11,8 +11,8 @@ import { HostApi } from "../webview-api";
 import { EditorSelectRangeRequestType } from "@codestream/protocols/webview";
 import { useDidMount } from "../utilities/hooks";
 import { getDocumentFromMarker } from "./api-functions";
-import { setUserPreference } from "./actions";
-import { getPreferences, getReadReplies } from "../store/users/reducer";
+import { markItemRead, setUserPreference } from "./actions";
+import { getPreferences, getReadReplies, isUnread } from "../store/users/reducer";
 
 export async function moveCursorToLine(markerId: string) {
 	const hostApi = HostApi.instance;
@@ -42,8 +42,8 @@ export function CodemarkView() {
 	const codemark = useSelector((state: CodeStreamState) => {
 		return getCodemark(state.codemarks, state.context.currentCodemarkId);
 	});
-	const readReplies = useSelector((state: CodeStreamState) => {
-		return codemark ? getReadReplies(state, codemark.id) : 0;
+	const unread = useSelector((state: CodeStreamState) => {
+		return codemark ? isUnread(state, codemark) : false;
 	});
 	const store = useStore<CodeStreamState>();
 
@@ -54,8 +54,8 @@ export function CodemarkView() {
 		if (codemark == undefined) {
 			// TODO: fetch it when we have the api for that
 			dispatch(setCurrentCodemark());
-		} else if (codemark.numReplies > readReplies) {
-			dispatch(setUserPreference(["readReplies", codemark.id], codemark.numReplies));
+		} else if (unread) {
+			dispatch(markItemRead(codemark.id, codemark.numReplies || 0));
 		}
 	});
 

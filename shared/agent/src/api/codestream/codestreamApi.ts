@@ -1268,8 +1268,8 @@ export class CodeStreamApiProvider implements ApiProvider {
 	@log()
 	markItemRead(request: MarkItemReadRequest) {
 		return this.put<CSMarkItemReadRequest, CSMarkItemReadResponse>(
-			`/read-item/${request.postId}`,
-			request,
+			`/read-item/${request.itemId}`,
+			{ numReples: request.numReplies },
 			this._token
 		);
 	}

@@ -938,14 +938,22 @@ export class Codemark extends React.Component<Props, State> {
 								placement="topRight"
 								name="star"
 								className="subtle"
+								align={{ offset: [20, 0] }}
 							/>
 						)}
-						{codemark.numReplies > 0 && (
+						{(codemark.numReplies > 0 || unread) && (
 							<span
 								className={`badge${unread}`}
 								style={{ marginLeft: "10px", flexGrow: 0, flexShrink: 0 }}
 							>
-								{codemark.numReplies}
+								{codemark.numReplies > 0 ? (
+									codemark.numReplies
+								) : (
+									<>
+										&nbsp;
+										<span className="dot" />
+									</>
+								)}
 							</span>
 						)}
 						{false && lines && (
@@ -2116,6 +2124,8 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 			? getReview(state.reviews, codemark.reviewId)
 			: undefined;
 
+	const unread = isUnread(state, codemark!);
+	console.warn("UNREAD IS: ", unread, " for codemark ", codemark);
 	return {
 		post,
 		review,
@@ -2129,7 +2139,7 @@ const mapStateToProps = (state: CodeStreamState, props: InheritedProps): Connect
 		currentUser: users[session.userId!] as CSMe,
 		author: author as CSUser,
 		codemarkKeybindings: preferences.codemarkKeybindings || EMPTY_OBJECT,
-		unread: isUnread(state, post),
+		unread,
 		teammates: getTeamMembers(state),
 		usernames: getUsernames(state),
 		teamTagsHash,

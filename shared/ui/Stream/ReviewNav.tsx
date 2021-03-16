@@ -11,7 +11,7 @@ import { fetchReview } from "@codestream/webview/store/reviews/actions";
 import { CodeStreamState } from "../store";
 import { getReview } from "../store/reviews/reducer";
 import { MinimumWidthCard, Meta, BigTitle, Header } from "./Codemark/BaseCodemark";
-import { setReviewStatus } from "./actions";
+import { markItemRead, setReviewStatus } from "./actions";
 import { ReviewCloseDiffRequestType } from "../ipc/host.protocol.review";
 import Icon from "./Icon";
 import { confirmPopup } from "./Confirm";
@@ -239,13 +239,21 @@ export function ReviewNav(props: Props) {
 		await dispatch(setCurrentReview(review && review.id));
 	};
 
+	const markRead = () => {
+		// @ts-ignore
+		if (review) dispatch(markItemRead(review.id, review.numReplies || 0));
+	};
+
 	useDidMount(() => {
 		let isValid = true;
 		if (review == null) {
 			dispatch(fetchReview(props.reviewId)).then(result => {
 				if (!isValid) return;
 				if (result == null) setNotFound(true);
+				markRead();
 			});
+		} else {
+			markRead();
 		}
 		// Kind of a HACK leaving this here, BUT...
 		// since <CancelButton /> uses the OLD version of Button.js

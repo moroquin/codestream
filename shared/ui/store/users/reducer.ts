@@ -161,17 +161,53 @@ export const getReadReplies = createSelector(
 	(preferences: PreferencesState, id: string) => (preferences.readReplies || {})[id] || 0
 );
 
+interface Readable {
+	id: string;
+	numReplies: number;
+	createdAt: number;
+}
+
 export const isUnread = createSelector(
 	(state: CodeStreamState) => state.umis,
-	(a: any, post?: CSPost) => post,
-	(umis: UnreadsState, post?: CSPost) => {
-		if (!post) return false;
+	(a: any, item: Readable) => item,
+	(umis: UnreadsState, item: Readable) => {
+		if (!item) return false;
 		const { lastReadItems = {} } = umis;
-		const lastReadItem = lastReadItems[post.id];
+		const lastReadItem = lastReadItems[item.id];
 		// if we've never read the item, or if there are new replies
 		// since the last time we read it, return true
-		if (lastReadItem == undefined || post.numReplies > lastReadItem) return true;
+		// start represents when this feature was first deployed;
+		// items before that won't have the unread badge otherwise
+		// customers will just have a "sea of blue" even though they
+		// may be up-to-date on all content
+		const start = 1613580103838;
+		if ((lastReadItem == undefined && item.createdAt > start) || item.numReplies > lastReadItem)
+			return true;
 		return false;
+	}
+);
+
+export const unreadMap = createSelector(
+	(state: CodeStreamState) => state.umis,
+	(a: any, items: Readable[]) => items,
+	(umis: UnreadsState, items: Readable[]) => {
+		const { lastReadItems = {} } = umis;
+		const ret = {};
+		items.forEach(item => {
+			if (!item) return;
+			const lastReadItem = lastReadItems[item.id];
+			// if we've never read the item, or if there are new replies
+			// since the last time we read it, return true
+			// start represents when this feature was first deployed;
+			// items before that won't have the unread badge otherwise
+			// customers will just have a "sea of blue" even though they
+			// may be up-to-date on all content
+			const start = 1613580103838;
+			if ((lastReadItem == undefined && item.createdAt > start) || item.numReplies > lastReadItem)
+				ret[item.id] = true;
+			else ret[item.id] = false;
+		});
+		return ret;
 	}
 );
 

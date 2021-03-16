@@ -112,11 +112,11 @@ export const markPostUnread = (streamId: string, postId: string) => () => {
 		);
 };
 
-export const markItemRead = (postId: string, numReplies: number) => () => {
+export const markItemRead = (itemId: string, numReplies: number) => () => {
 	HostApi.instance
-		.send(MarkItemReadRequestType, { postId, numReplies })
+		.send(MarkItemReadRequestType, { itemId, numReplies })
 		.catch(error =>
-			logError(`There was an error marking an item read: ${error}`, { postId, numReplies })
+			logError(`There was an error marking an item read: ${error}`, { itemId, numReplies })
 		);
 };
 

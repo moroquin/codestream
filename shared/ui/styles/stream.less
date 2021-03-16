@@ -312,13 +312,25 @@
 				background: #444;
 			}
 			border-radius: 9px;
-			padding: 0 5px;
-			min-width: 18px;
+			padding: 1px 4px;
+			min-width: 17px;
 			text-align: center;
 			margin: 0 5px;
+			position: relative;
+			font-size: 11px;
 			&.unread {
 				background: @background-color-umi;
 				color: white;
+			}
+			.dot {
+				display: block;
+				position: absolute;
+				width: 3px;
+				height: 3px;
+				background: white;
+				top: 7px;
+				left: 7px;
+				border-radius: 3px;
 			}
 		}
 		.mentions-badge,

@@ -200,7 +200,7 @@ export const MarkStreamReadRequestType = new RequestType<
 >("codestream/stream/markRead");
 
 export interface MarkItemReadRequest {
-	postId: string;
+	itemId: string;
 	numReplies: number;
 }
 

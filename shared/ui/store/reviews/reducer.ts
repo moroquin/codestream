@@ -79,6 +79,10 @@ export const teamReviewCount = createSelector(getReviews, (reviews: Index<CSRevi
 	return Object.keys(reviews).length;
 });
 
+export const getReviewsUnread = createSelector(getReviews, (reviews: Index<CSReview>) => {
+	let ret = {};
+});
+
 // a mapping from commit IDs to the reviews that contain that commit ID
 // e.g.
 // {

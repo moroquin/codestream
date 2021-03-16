@@ -41,7 +41,7 @@ interface Props {
 export const OpenReviews = React.memo(function OpenReviews(props: Props) {
 	const dispatch = useDispatch();
 	const derivedState = useSelector((state: CodeStreamState) => {
-		const { session, preferences } = state;
+		const { session, preferences, reviews } = state;
 
 		const queries = preferences.fetchRequestQueries || DEFAULT_FR_QUERIES;
 
@@ -61,7 +61,8 @@ export const OpenReviews = React.memo(function OpenReviews(props: Props) {
 			queries,
 			reviewGroups,
 			currentUserId,
-			teamMembers
+			teamMembers,
+			unreadMap: userSelectors.unreadMap(state, Object.values(reviews.reviews))
 		};
 	}, shallowEqual);
 
@@ -166,6 +167,7 @@ export const OpenReviews = React.memo(function OpenReviews(props: Props) {
 											reviews.map((review, index) => {
 												const codeAuthorId = (review.codeAuthorIds || [])[0] || review.creatorId;
 												const codeAuthor = teamMembers.find(user => user.id === codeAuthorId);
+												const unreadClass = derivedState.unreadMap[review.id] ? " unread" : "";
 												return (
 													<Row
 														key={"review-" + review.id}
@@ -216,12 +218,19 @@ export const OpenReviews = React.memo(function OpenReviews(props: Props) {
 																delay={1}
 															/>
 															<Timestamp time={review.createdAt} relative abbreviated />
-															{review.numReplies > 0 && (
+															{(review.numReplies > 0 || derivedState.unreadMap[review.id]) && (
 																<span
-																	className="badge"
+																	className={`badge${unreadClass}`}
 																	style={{ margin: "0 0 0 10px", flexGrow: 0, flexShrink: 0 }}
 																>
-																	{review.numReplies}
+																	{review.numReplies > 0 ? (
+																		review.numReplies
+																	) : (
+																		<>
+																			&nbsp;
+																			<span className="dot" />
+																		</>
+																	)}
 																</span>
 															)}
 														</div>
